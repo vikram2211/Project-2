@@ -18,10 +18,13 @@ const createCollege = async function (req, res) {
             .test(data.logoLink)
 
 
+        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "Body must be present." })
 
         if (!isValid(data.name)) return res.status(400).send({ status: false, message: "name is required" })
 
         if (!data.name) return res.status(400).send({ status: false, message: "name is required" });
+
+        data.name = data.name.toLowerCase().trim()
 
         const validateName = await CollegeModel.findOne({ name: data.name })
 
@@ -45,28 +48,16 @@ const createCollege = async function (req, res) {
 }
 
 
-// GET /functionup/collegeDetails
-// Returns the college details for the requested college (Expect a query parameter by the name collegeName. This is anabbreviated college name. For example iith)
-// Returns the list of all interns who have applied for internship at this college.
-// The response structure should look like this
-// Testing
-// To test these apis create a new collection in Postman named Project 2 Internship
-// Each api should have a new request in this collection
-// Each request in the collection should be rightly named. Eg Create college, Get college details etc
-// Each member of each team should have their tests in running state
-
-
 
 const getAllCollegessWithInterns = async function (req, res) {
     try {
-        // let data = req.query;
-        // let fullName = data.fullName;
+
         let collegeName = req.query.collegeName
 
         const collegeData = await CollegeModel.findOne({ name: collegeName, isDeleted: false })
 
         if (!collegeData) return res.status(404).send({ status: false, message: "no college found" })
-        // fullName = collegeData.fullName;
+
         const filterCollege = {
             name: collegeData.name,
             fullName: collegeData.fullName,
@@ -74,11 +65,11 @@ const getAllCollegessWithInterns = async function (req, res) {
         }
 
         const collegeId = collegeData._id
-        const getInterns = await InternModel.find({ collegeId: collegeId, isDeleted: false })
+        const getInterns = await InternModel.find({ collegeId: collegeId, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 })
         console.log(getInterns)
 
         if (getInterns.length != 0) {
-            filterCollege.intrest = getInterns
+            filterCollege.interns = getInterns
             res.status(200).send({ status: true, data: filterCollege })
         }
         //    console.log(getInterns)

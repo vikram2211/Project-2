@@ -15,13 +15,13 @@ const internSchema = new mongoose.Schema({
 
     },
     mobile: {
-        required:true,
+        required: true,
         type: Number,
         unique: true
 
     },
     collegeId: {
-        required:true,
+        required: true,
         type: mongoose.Schema.Types.ObjectId,
         ref: "mycollege"
 
@@ -30,6 +30,7 @@ const internSchema = new mongoose.Schema({
         type: Boolean,
         default: false
 
-    }}, {timestamps:true});
+    }
+}, { timestamps: true });
 
 module.exports = mongoose.model('intern', internSchema)
