@@ -20,7 +20,7 @@ const createCollege = async function (req, res) {
 
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "Body must be present." })
 
-        if (!isValid(data.name)) return res.status(400).send({ status: false, message: "name is required" })
+        if (!isValid(data.name)) return res.status(400).send({ status: false, message: "name is invalid!!" })
 
         if (!data.name) return res.status(400).send({ status: false, message: "name is required" });
 
@@ -31,7 +31,7 @@ const createCollege = async function (req, res) {
         if (validateName) return res.status(400).send({ status: false, message: "name must be unique" })
 
 
-        if (!isValid(data.fullName)) return res.status(400).send({ status: false, message: "fullName is required" })
+        if (!isValid(data.fullName)) return res.status(400).send({ status: false, message: "fullName is invalid!!" })
         if (!data.fullName) return res.status(400).send({ status: false, message: "fullname is required" });
 
         if (!data.logoLink) return res.status(400).send({ status: false, message: "logolink is required" });
@@ -66,13 +66,13 @@ const getAllCollegessWithInterns = async function (req, res) {
 
         const collegeId = collegeData._id
         const getInterns = await InternModel.find({ collegeId: collegeId, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 })
-        console.log(getInterns)
+        
 
         if (getInterns.length != 0) {
             filterCollege.interns = getInterns
             res.status(200).send({ status: true, data: filterCollege })
         }
-        //    console.log(getInterns)
+
         if (getInterns.length == 0) return res.status(400).send({ status: false, message: "no interns found." })
     } catch (err) {
         res.status(500).send({ status: false, error: err.message })
